@@ -86,6 +86,13 @@ body::before {
   z-index: 1;
 }
 
+.hero-topbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+}
+
 .eyebrow,
 .section-kicker {
   margin: 0 0 10px;
@@ -125,10 +132,55 @@ body::before {
   margin-top: 28px;
 }
 
+.hero-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.hero-badge,
+.lang-btn {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  color: var(--muted);
+  backdrop-filter: blur(10px);
+}
+
 button,
 select,
 input {
   font: inherit;
+}
+
+.lang-switch {
+  display: inline-flex;
+  gap: 8px;
+}
+
+.lang-btn {
+  min-width: 52px;
+  min-height: 42px;
+  padding: 0 14px;
+  border-radius: 999px;
+  color: var(--text);
+  cursor: pointer;
+  transition: transform 180ms ease, background 180ms ease, border-color 180ms ease;
+}
+
+.lang-btn.active,
+.lang-btn:hover {
+  transform: translateY(-1px);
+  border-color: rgba(69, 240, 209, 0.42);
+  background: rgba(69, 240, 209, 0.16);
 }
 
 .primary-btn,
@@ -267,7 +319,7 @@ input {
 
 .status-strip {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 18px;
 }
 
@@ -344,6 +396,32 @@ input[type="range"] {
   max-width: 72ch;
   line-height: 1.6;
   color: var(--muted);
+}
+
+.meta-strip {
+  display: grid;
+  grid-template-columns: minmax(220px, 1.1fr) minmax(280px, 1.4fr);
+  gap: 18px;
+}
+
+.meta-item {
+  border-radius: 20px;
+  padding: 18px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.meta-item p,
+.meta-item code {
+  margin: 0;
+}
+
+.mono {
+  display: block;
+  color: var(--text);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
 }
 
 .workspace-grid {
@@ -563,6 +641,18 @@ canvas {
   background: rgba(69, 240, 209, 0.14);
 }
 
+.project-footer {
+  display: grid;
+  gap: 8px;
+  padding: 22px 8px 0;
+  color: var(--muted);
+}
+
+.project-footer p {
+  margin: 0;
+  line-height: 1.6;
+}
+
 @keyframes spin {
   from { transform: rotate(-16deg); }
   to { transform: rotate(344deg); }
@@ -607,6 +697,7 @@ canvas {
 
   .status-strip,
   .control-row,
+  .meta-strip,
   .metric-grid-wide,
   .buttons-grid {
     grid-template-columns: 1fr;
@@ -614,6 +705,11 @@ canvas {
 
   .metric-grid {
     grid-template-columns: 1fr 1fr;
+  }
+
+  .hero-topbar {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
   .hero h1 {

@@ -1,16 +1,230 @@
 const MAX_HISTORY = 180;
 const BUTTON_COUNT = 18;
+const DEFAULT_LANGUAGE = "es";
+const LANGUAGE_STORAGE_KEY = "padpulse-language";
+
+const MODEL_DATABASE = {
+  "054c:05c4": { vendor: "Sony", family: "playstation", model: "DualShock 4" },
+  "054c:09cc": { vendor: "Sony", family: "playstation", model: "DualShock 4 v2" },
+  "054c:0ce6": { vendor: "Sony", family: "playstation", model: "DualSense" },
+  "054c:0df2": { vendor: "Sony", family: "playstation", model: "DualSense Edge" },
+  "045e:028e": { vendor: "Microsoft", family: "xbox", model: "Xbox 360 Controller" },
+  "045e:02d1": { vendor: "Microsoft", family: "xbox", model: "Xbox One Controller" },
+  "045e:02dd": { vendor: "Microsoft", family: "xbox", model: "Xbox One Controller" },
+  "045e:02e0": { vendor: "Microsoft", family: "xbox", model: "Xbox One S Controller" },
+  "045e:02ea": { vendor: "Microsoft", family: "xbox", model: "Xbox One S Controller" },
+  "045e:02fd": { vendor: "Microsoft", family: "xbox", model: "Xbox One S Controller" },
+  "045e:0b12": { vendor: "Microsoft", family: "xbox", model: "Xbox Series X|S Controller" },
+  "045e:0b13": { vendor: "Microsoft", family: "xbox", model: "Xbox Series X|S Controller" },
+};
+
+const BUTTON_LABELS = {
+  playstation: [
+    "Cross",
+    "Circle",
+    "Square",
+    "Triangle",
+    "L1",
+    "R1",
+    "L2",
+    "R2",
+    "Create",
+    "Options",
+    "L3",
+    "R3",
+    "D-pad Up",
+    "D-pad Down",
+    "D-pad Left",
+    "D-pad Right",
+    "PS",
+    "Touchpad",
+  ],
+  xbox: [
+    "A",
+    "B",
+    "X",
+    "Y",
+    "LB",
+    "RB",
+    "LT",
+    "RT",
+    "View",
+    "Menu",
+    "LS",
+    "RS",
+    "D-pad Up",
+    "D-pad Down",
+    "D-pad Left",
+    "D-pad Right",
+    "Xbox",
+    "Share",
+  ],
+};
+
+const TRANSLATIONS = {
+  es: {
+    pageTitle: "PadPulse | Test de mandos PS5 y Xbox",
+    pageDescription:
+      "Web de prueba para mandos PS5, Xbox y gamepads genericos con drift, respuesta, polling y diagnostico de sticks.",
+    heroTitle: "Test en vivo para mandos PS5 y Xbox",
+    heroText:
+      "Conecta un mando por USB o Bluetooth y revisa sticks, botones, gatillos, drift, polling del navegador y una estimacion de retardo construida con la Gamepad API.",
+    badgePrivate: "Solo local",
+    badgeBrowser: "Basado en navegador",
+    badgeSupport: "PS5, Xbox y mandos genericos",
+    calibrateBtn: "Calibrar centro",
+    resetBtn: "Reiniciar metricas",
+    statusKicker: "Estado",
+    statusTitle: "Conexion y captura",
+    stateLabel: "Estado",
+    familyLabel: "Familia",
+    modelLabel: "Modelo",
+    idsLabel: "Vendor / Product",
+    mappingLabel: "Mapping",
+    samplesLabel: "Muestras",
+    activeControllerLabel: "Mando activo",
+    deadzoneLabel: "Zona muerta",
+    noteLabel: "Nota",
+    latencyNote:
+      "La latencia real del hardware no es accesible desde el navegador. Esta demo muestra una estimacion basada en timestamp, requestAnimationFrame y cambios de entrada visibles.",
+    rawIdLabel: "ID bruto del gamepad",
+    privacyLabel: "Privacidad",
+    privacyText:
+      "Todo se ejecuta localmente en tu navegador. No se sube ningun dato del mando a ningun servidor.",
+    sticksKicker: "Sticks",
+    sticksTitle: "Drift y precision",
+    leftStickTitle: "Stick izquierdo",
+    rightStickTitle: "Stick derecho",
+    traceKicker: "Traza",
+    traceTitle: "Historial en tiempo real",
+    inputsKicker: "Entradas",
+    inputsTitle: "Botones y gatillos",
+    footerLineOne:
+      "PadPulse es un proyecto web estatico pensado para probar mandos sin instalar software nativo.",
+    footerLineTwo:
+      "Funciona mejor en localhost y en navegadores Chromium modernos con soporte para Gamepad API.",
+    noControllerConnected: "Sin mando conectado",
+    notDetected: "No detectado",
+    unknownModel: "Modelo desconocido",
+    notExposed: "No expuesto",
+    noMapping: "sin mapping",
+    selectNoControllers: "Sin mandos",
+    connectedStatus: "Conectado (#{{index}})",
+    waitingSignal: "Esperando senal",
+    connectToStart: "Conecta un mando para empezar",
+    outsideDeadzone: "Entrada fuera de la zona muerta",
+    insideDeadzone: "Reposo / dentro de zona muerta",
+    genericFamily: "Gamepad generico",
+    playStationFamily: "PlayStation",
+    xboxFamily: "Xbox",
+    unsupportedFamily: "Controlador desconocido",
+    estimatedPolling: "Polling estimado",
+    averageFrame: "Frame medio",
+    jitter: "Jitter",
+    estimatedLatency: "Retardo estimado",
+    lastVisibleChange: "Ultimo cambio visible",
+    timestamp: "Timestamp",
+    unavailable: "No disponible",
+    rawX: "X crudo",
+    rawY: "Y crudo",
+    magnitude: "Magnitud",
+    peak: "Pico",
+    idleAverage: "Promedio en reposo",
+    filtered: "Filtrado",
+    genericButton: "Boton {{index}}",
+    noData: "-",
+    noRawId: "-",
+  },
+  en: {
+    pageTitle: "PadPulse | PS5 and Xbox controller tester",
+    pageDescription:
+      "Browser based tester for PS5, Xbox and generic gamepads with drift, response, polling and stick diagnostics.",
+    heroTitle: "Live PS5 and Xbox controller tester",
+    heroText:
+      "Connect a controller over USB or Bluetooth and inspect sticks, buttons, triggers, drift, browser polling and a latency estimate built from the Gamepad API.",
+    badgePrivate: "Local only",
+    badgeBrowser: "Browser based",
+    badgeSupport: "PS5, Xbox and generic pads",
+    calibrateBtn: "Calibrate center",
+    resetBtn: "Reset metrics",
+    statusKicker: "Status",
+    statusTitle: "Connection and capture",
+    stateLabel: "State",
+    familyLabel: "Family",
+    modelLabel: "Model",
+    idsLabel: "Vendor / Product",
+    mappingLabel: "Mapping",
+    samplesLabel: "Samples",
+    activeControllerLabel: "Active controller",
+    deadzoneLabel: "Deadzone",
+    noteLabel: "Note",
+    latencyNote:
+      "Real hardware latency is not exposed to the browser. This demo shows an estimate based on timestamp, requestAnimationFrame cadence and visible input changes.",
+    rawIdLabel: "Raw gamepad id",
+    privacyLabel: "Privacy",
+    privacyText:
+      "Everything runs locally in your browser. No controller data is uploaded to any server.",
+    sticksKicker: "Sticks",
+    sticksTitle: "Drift and precision",
+    leftStickTitle: "Left stick",
+    rightStickTitle: "Right stick",
+    traceKicker: "Trace",
+    traceTitle: "Realtime history",
+    inputsKicker: "Inputs",
+    inputsTitle: "Buttons and triggers",
+    footerLineOne:
+      "PadPulse is a static browser project built to test controllers without installing native software.",
+    footerLineTwo:
+      "It works best on localhost and on modern Chromium based browsers with Gamepad API support.",
+    noControllerConnected: "No controller connected",
+    notDetected: "Not detected",
+    unknownModel: "Unknown model",
+    notExposed: "Not exposed",
+    noMapping: "no mapping",
+    selectNoControllers: "No controllers",
+    connectedStatus: "Connected (#{{index}})",
+    waitingSignal: "Waiting for signal",
+    connectToStart: "Connect a controller to begin",
+    outsideDeadzone: "Input outside the deadzone",
+    insideDeadzone: "Idle / inside deadzone",
+    genericFamily: "Generic gamepad",
+    playStationFamily: "PlayStation",
+    xboxFamily: "Xbox",
+    unsupportedFamily: "Unknown controller",
+    estimatedPolling: "Estimated polling",
+    averageFrame: "Average frame",
+    jitter: "Jitter",
+    estimatedLatency: "Estimated latency",
+    lastVisibleChange: "Last visible change",
+    timestamp: "Timestamp",
+    unavailable: "Unavailable",
+    rawX: "Raw X",
+    rawY: "Raw Y",
+    magnitude: "Magnitude",
+    peak: "Peak",
+    idleAverage: "Idle average",
+    filtered: "Filtered",
+    genericButton: "Button {{index}}",
+    noData: "-",
+    noRawId: "-",
+  },
+};
 
 const dom = {
   calibrateBtn: document.getElementById("calibrateBtn"),
   resetBtn: document.getElementById("resetBtn"),
+  langEsBtn: document.getElementById("langEsBtn"),
+  langEnBtn: document.getElementById("langEnBtn"),
   gamepadSelect: document.getElementById("gamepadSelect"),
   deadzoneRange: document.getElementById("deadzoneRange"),
   deadzoneValue: document.getElementById("deadzoneValue"),
   connectionState: document.getElementById("connectionState"),
   controllerType: document.getElementById("controllerType"),
+  controllerModel: document.getElementById("controllerModel"),
+  hardwareIds: document.getElementById("hardwareIds"),
   mappingState: document.getElementById("mappingState"),
   sampleCounter: document.getElementById("sampleCounter"),
+  rawIdState: document.getElementById("rawIdState"),
   leftStickStatus: document.getElementById("leftStickStatus"),
   rightStickStatus: document.getElementById("rightStickStatus"),
   leftStickMetrics: document.getElementById("leftStickMetrics"),
@@ -27,9 +241,12 @@ const dom = {
   leftTriggerFill: document.getElementById("leftTriggerFill"),
   rightTriggerFill: document.getElementById("rightTriggerFill"),
   metricTemplate: document.getElementById("metricTemplate"),
+  translatable: Array.from(document.querySelectorAll("[data-i18n]")),
+  metaDescription: document.querySelector('meta[name="description"]'),
 };
 
 const state = {
+  language: resolveInitialLanguage(),
   deadzone: Number(dom.deadzoneRange.value),
   selectedIndex: null,
   sampleCount: 0,
@@ -52,9 +269,31 @@ const state = {
     lastInputChange: 0,
   },
   buttons: [],
+  lastControllerInfo: null,
 };
 
 const ctx = dom.historyCanvas.getContext("2d");
+
+function resolveInitialLanguage() {
+  const saved = window.localStorage.getItem(LANGUAGE_STORAGE_KEY);
+  if (saved && TRANSLATIONS[saved]) {
+    return saved;
+  }
+
+  const browserLanguage = (navigator.language || DEFAULT_LANGUAGE).toLowerCase();
+  return browserLanguage.startsWith("es") ? "es" : "en";
+}
+
+function t(key, replacements = {}) {
+  const dictionary = TRANSLATIONS[state.language] || TRANSLATIONS[DEFAULT_LANGUAGE];
+  let value = dictionary[key] || TRANSLATIONS[DEFAULT_LANGUAGE][key] || key;
+
+  Object.entries(replacements).forEach(([replacementKey, replacementValue]) => {
+    value = value.replace(`{{${replacementKey}}}`, replacementValue);
+  });
+
+  return value;
+}
 
 function createEmptyStats() {
   return {
@@ -71,70 +310,105 @@ function makeStickStats() {
   };
 }
 
-function labelSetForGamepad(id) {
-  const normalized = (id || "").toLowerCase();
-  if (normalized.includes("playstation") || normalized.includes("wireless controller") || normalized.includes("sony")) {
+function parseIdsFromGamepadId(id) {
+  if (!id) {
+    return { vendorId: null, productId: null };
+  }
+
+  const vendorProductMatch = id.match(/vendor[:\s]*([0-9a-f]{4}).*product[:\s]*([0-9a-f]{4})/i);
+  if (vendorProductMatch) {
     return {
-      type: "PlayStation",
-      leftTrigger: "L2",
-      rightTrigger: "R2",
-      buttons: [
-        "Cross",
-        "Circle",
-        "Square",
-        "Triangle",
-        "L1",
-        "R1",
-        "L2",
-        "R2",
-        "Create",
-        "Options",
-        "L3",
-        "R3",
-        "D-pad Up",
-        "D-pad Down",
-        "D-pad Left",
-        "D-pad Right",
-        "PS",
-        "Touchpad",
-      ],
+      vendorId: vendorProductMatch[1].toLowerCase(),
+      productId: vendorProductMatch[2].toLowerCase(),
     };
   }
 
-  if (normalized.includes("xbox") || normalized.includes("xinput") || normalized.includes("microsoft")) {
+  const genericHexMatch = id.match(/([0-9a-f]{4})[-: ]([0-9a-f]{4})/i);
+  if (genericHexMatch) {
     return {
-      type: "Xbox",
-      leftTrigger: "LT",
-      rightTrigger: "RT",
-      buttons: [
-        "A",
-        "B",
-        "X",
-        "Y",
-        "LB",
-        "RB",
-        "LT",
-        "RT",
-        "View",
-        "Menu",
-        "LS",
-        "RS",
-        "D-pad Up",
-        "D-pad Down",
-        "D-pad Left",
-        "D-pad Right",
-        "Xbox",
-        "Share",
-      ],
+      vendorId: genericHexMatch[1].toLowerCase(),
+      productId: genericHexMatch[2].toLowerCase(),
     };
   }
+
+  return { vendorId: null, productId: null };
+}
+
+function inferProfileFromId(id, vendorId, productId) {
+  const normalized = (id || "").toLowerCase();
+  const hardwareKey = vendorId && productId ? `${vendorId}:${productId}` : "";
+  const exact = hardwareKey ? MODEL_DATABASE[hardwareKey] : null;
+
+  if (exact) {
+    return exact;
+  }
+
+  if (normalized.includes("dualsense edge")) {
+    return { vendor: "Sony", family: "playstation", model: "DualSense Edge" };
+  }
+
+  if (normalized.includes("dualsense")) {
+    return { vendor: "Sony", family: "playstation", model: "DualSense" };
+  }
+
+  if (normalized.includes("dualshock") || normalized.includes("wireless controller") || vendorId === "054c") {
+    return { vendor: "Sony", family: "playstation", model: "PlayStation Controller" };
+  }
+
+  if (normalized.includes("xbox elite")) {
+    return { vendor: "Microsoft", family: "xbox", model: "Xbox Elite Controller" };
+  }
+
+  if (normalized.includes("xbox") || normalized.includes("xinput") || vendorId === "045e") {
+    return { vendor: "Microsoft", family: "xbox", model: "Xbox Wireless Controller" };
+  }
+
+  return { vendor: null, family: "generic", model: t("unknownModel") };
+}
+
+function buildControllerInfo(gamepad) {
+  const { vendorId, productId } = parseIdsFromGamepadId(gamepad.id);
+  const inferred = inferProfileFromId(gamepad.id, vendorId, productId);
+  const family = inferred.family || "generic";
+  const vendorName = inferred.vendor || t("notDetected");
+  const hardwareIds = vendorId && productId ? `${vendorId.toUpperCase()}:${productId.toUpperCase()}` : t("notExposed");
+  const rawId = gamepad.id && gamepad.id.trim() ? gamepad.id : t("noRawId");
 
   return {
-    type: "Gamepad generico",
-    leftTrigger: "Trigger L",
-    rightTrigger: "Trigger R",
-    buttons: Array.from({ length: BUTTON_COUNT }, (_, index) => `Boton ${index}`),
+    family,
+    familyLabel: familyLabelFor(family),
+    model: inferred.model || t("unknownModel"),
+    vendorName,
+    vendorId,
+    productId,
+    hardwareIds,
+    rawId,
+    mapping: gamepad.mapping || t("noMapping"),
+    leftTrigger: family === "playstation" ? "L2" : family === "xbox" ? "LT" : "Trigger L",
+    rightTrigger: family === "playstation" ? "R2" : family === "xbox" ? "RT" : "Trigger R",
+    buttons: buttonLabelsForFamily(family),
   };
+}
+
+function familyLabelFor(family) {
+  if (family === "playstation") {
+    return t("playStationFamily");
+  }
+  if (family === "xbox") {
+    return t("xboxFamily");
+  }
+  if (family === "generic") {
+    return t("genericFamily");
+  }
+  return t("unsupportedFamily");
+}
+
+function buttonLabelsForFamily(family) {
+  if (BUTTON_LABELS[family]) {
+    return BUTTON_LABELS[family];
+  }
+
+  return Array.from({ length: BUTTON_COUNT }, (_, index) => t("genericButton", { index }));
 }
 
 function getConnectedGamepads() {
@@ -148,7 +422,7 @@ function updateGamepadSelect() {
 
   if (!connected.length) {
     const option = document.createElement("option");
-    option.textContent = "Sin mandos";
+    option.textContent = t("selectNoControllers");
     option.value = "";
     dom.gamepadSelect.append(option);
     state.selectedIndex = null;
@@ -156,22 +430,16 @@ function updateGamepadSelect() {
   }
 
   connected.forEach((pad) => {
+    const info = buildControllerInfo(pad);
     const option = document.createElement("option");
     option.value = String(pad.index);
-    option.textContent = `#${pad.index} - ${shortenId(pad.id)}`;
+    option.textContent = `#${pad.index} - ${info.model}`;
     dom.gamepadSelect.append(option);
   });
 
   const hasPrevious = connected.some((pad) => pad.index === previousValue);
   state.selectedIndex = hasPrevious ? previousValue : connected[0].index;
   dom.gamepadSelect.value = String(state.selectedIndex);
-}
-
-function shortenId(id) {
-  if (!id) {
-    return "Controlador desconocido";
-  }
-  return id.length > 52 ? `${id.slice(0, 49)}...` : id;
 }
 
 function getSelectedGamepad() {
@@ -192,6 +460,7 @@ function applyDeadzone(value, deadzone) {
   if (magnitude <= deadzone) {
     return 0;
   }
+
   const scaled = (magnitude - deadzone) / (1 - deadzone);
   return Math.sign(value) * scaled;
 }
@@ -222,6 +491,7 @@ function updateStickVisual(arena, raw, filtered, deadzone) {
 
 function upsertMetrics(container, metrics) {
   container.innerHTML = "";
+
   metrics.forEach((item) => {
     const node = dom.metricTemplate.content.firstElementChild.cloneNode(true);
     node.querySelector(".label").textContent = item.label;
@@ -230,10 +500,10 @@ function upsertMetrics(container, metrics) {
   });
 }
 
-function updateButtonsGrid(labels, buttons) {
+function updateButtonsGrid(controllerInfo, buttons) {
   if (!state.buttons.length) {
     dom.buttonsGrid.innerHTML = "";
-    labels.buttons.forEach((label, index) => {
+    controllerInfo.buttons.forEach((label, index) => {
       const wrapper = document.createElement("div");
       wrapper.className = "button-indicator";
       wrapper.dataset.buttonIndex = String(index);
@@ -245,7 +515,7 @@ function updateButtonsGrid(labels, buttons) {
 
   state.buttons.forEach((buttonNode, index) => {
     const button = buttons[index] || { value: 0, pressed: false };
-    buttonNode.querySelector("span").textContent = labels.buttons[index] || `Boton ${index}`;
+    buttonNode.querySelector("span").textContent = controllerInfo.buttons[index] || t("genericButton", { index });
     buttonNode.querySelector("strong").textContent = `${Math.round(button.value * 100)}%`;
     buttonNode.classList.toggle("active", Boolean(button.pressed || button.value > 0.02));
   });
@@ -278,6 +548,7 @@ function average(values) {
   if (!values.length) {
     return 0;
   }
+
   return values.reduce((sum, value) => sum + value, 0) / values.length;
 }
 
@@ -285,6 +556,7 @@ function standardDeviation(values) {
   if (values.length < 2) {
     return 0;
   }
+
   const mean = average(values);
   const variance = average(values.map((value) => (value - mean) ** 2));
   return Math.sqrt(variance);
@@ -346,8 +618,8 @@ function drawHistory() {
 
   ctx.strokeStyle = "rgba(255,255,255,0.08)";
   ctx.lineWidth = 1;
-  for (let i = 0; i < 5; i += 1) {
-    const y = (cssHeight / 4) * i;
+  for (let index = 0; index < 5; index += 1) {
+    const y = (cssHeight / 4) * index;
     ctx.beginPath();
     ctx.moveTo(0, y);
     ctx.lineTo(cssWidth, y);
@@ -376,6 +648,7 @@ function drawSeries(series, color, leftPadding, usableWidth, midY, chartHeight) 
   ctx.beginPath();
   ctx.lineWidth = 2;
   ctx.strokeStyle = color;
+
   series.forEach((value, index) => {
     const x = leftPadding + (usableWidth * index) / Math.max(series.length - 1, 1);
     const y = midY + value * chartHeight;
@@ -385,28 +658,8 @@ function drawSeries(series, color, leftPadding, usableWidth, midY, chartHeight) 
       ctx.lineTo(x, y);
     }
   });
-  ctx.stroke();
-}
 
-function setDisconnectedState() {
-  dom.connectionState.textContent = "Sin mando conectado";
-  dom.controllerType.textContent = "No detectado";
-  dom.mappingState.textContent = "-";
-  dom.sampleCounter.textContent = "0";
-  dom.leftStickStatus.textContent = "Conecta un mando para empezar";
-  dom.rightStickStatus.textContent = "Conecta un mando para empezar";
-  dom.leftTriggerLabel.textContent = "L2 / LT";
-  dom.rightTriggerLabel.textContent = "R2 / RT";
-  dom.leftTriggerValue.textContent = "0%";
-  dom.rightTriggerValue.textContent = "0%";
-  dom.leftTriggerFill.style.width = "0%";
-  dom.rightTriggerFill.style.width = "0%";
-  dom.buttonsGrid.innerHTML = "";
-  state.buttons = [];
-  upsertMetrics(dom.leftStickMetrics, []);
-  upsertMetrics(dom.rightStickMetrics, []);
-  upsertMetrics(dom.timingMetrics, []);
-  ctx.clearRect(0, 0, dom.historyCanvas.width, dom.historyCanvas.height);
+  ctx.stroke();
 }
 
 function resetMetrics() {
@@ -441,6 +694,76 @@ function formatSigned(value) {
   return value > 0 ? `+${rounded}` : rounded;
 }
 
+function setDisconnectedState() {
+  dom.connectionState.textContent = t("noControllerConnected");
+  dom.controllerType.textContent = t("notDetected");
+  dom.controllerModel.textContent = t("unknownModel");
+  dom.hardwareIds.textContent = t("notExposed");
+  dom.mappingState.textContent = "-";
+  dom.sampleCounter.textContent = "0";
+  dom.rawIdState.textContent = t("noRawId");
+  dom.leftStickStatus.textContent = t("connectToStart");
+  dom.rightStickStatus.textContent = t("connectToStart");
+  dom.leftTriggerLabel.textContent = "L2 / LT";
+  dom.rightTriggerLabel.textContent = "R2 / RT";
+  dom.leftTriggerValue.textContent = "0%";
+  dom.rightTriggerValue.textContent = "0%";
+  dom.leftTriggerFill.style.width = "0%";
+  dom.rightTriggerFill.style.width = "0%";
+  dom.buttonsGrid.innerHTML = "";
+  state.buttons = [];
+  upsertMetrics(dom.leftStickMetrics, []);
+  upsertMetrics(dom.rightStickMetrics, []);
+  upsertMetrics(dom.timingMetrics, []);
+  ctx.clearRect(0, 0, dom.historyCanvas.width, dom.historyCanvas.height);
+}
+
+function renderControllerIdentity(gamepad, controllerInfo) {
+  dom.connectionState.textContent = t("connectedStatus", { index: gamepad.index });
+  dom.controllerType.textContent = controllerInfo.familyLabel;
+  dom.controllerModel.textContent = controllerInfo.model;
+  dom.hardwareIds.textContent = controllerInfo.hardwareIds;
+  dom.mappingState.textContent = controllerInfo.mapping;
+  dom.rawIdState.textContent = controllerInfo.rawId;
+  dom.leftTriggerLabel.textContent = controllerInfo.leftTrigger;
+  dom.rightTriggerLabel.textContent = controllerInfo.rightTrigger;
+  state.lastControllerInfo = controllerInfo;
+}
+
+function buildStickMetricList(stickStats, raw, filtered) {
+  return [
+    { label: t("rawX"), value: formatSigned(raw.x) },
+    { label: t("rawY"), value: formatSigned(raw.y) },
+    { label: t("magnitude"), value: stickStats.current.toFixed(3) },
+    { label: t("peak"), value: stickStats.peak.toFixed(3) },
+    { label: t("idleAverage"), value: stickStats.idleAverage.toFixed(3) },
+    { label: t("filtered"), value: `${formatSigned(filtered.x)} / ${formatSigned(filtered.y)}` },
+  ];
+}
+
+function buildTimingMetricList(gamepad, now) {
+  const avgFrameDelta = average(state.timing.frameDeltaHistory);
+  const pollHz = avgFrameDelta > 0 ? 1000 / avgFrameDelta : 0;
+  const frameJitter = standardDeviation(state.timing.frameDeltaHistory);
+  const estimatedLatency = average(state.timing.estimatedLatencyHistory);
+  const lastVisibleChange = state.timing.lastInputChange ? now - state.timing.lastInputChange : 0;
+
+  return [
+    { label: t("estimatedPolling"), value: pollHz ? `${pollHz.toFixed(1)} Hz` : t("noData") },
+    { label: t("averageFrame"), value: avgFrameDelta ? `${avgFrameDelta.toFixed(2)} ms` : t("noData") },
+    { label: t("jitter"), value: `${frameJitter.toFixed(2)} ms` },
+    {
+      label: t("estimatedLatency"),
+      value: estimatedLatency ? `${estimatedLatency.toFixed(2)} ms` : t("unavailable"),
+    },
+    { label: t("lastVisibleChange"), value: `${lastVisibleChange.toFixed(1)} ms` },
+    {
+      label: t("timestamp"),
+      value: gamepad.timestamp ? `${gamepad.timestamp.toFixed(1)} ms` : t("notExposed"),
+    },
+  ];
+}
+
 function render() {
   const gamepad = getSelectedGamepad();
   if (!gamepad) {
@@ -449,14 +772,10 @@ function render() {
     return;
   }
 
-  const labels = labelSetForGamepad(gamepad.id);
+  const controllerInfo = buildControllerInfo(gamepad);
   const now = performance.now();
 
-  dom.connectionState.textContent = `Conectado (#${gamepad.index})`;
-  dom.controllerType.textContent = labels.type;
-  dom.mappingState.textContent = gamepad.mapping || "sin mapping";
-  dom.leftTriggerLabel.textContent = labels.leftTrigger;
-  dom.rightTriggerLabel.textContent = labels.rightTrigger;
+  renderControllerIdentity(gamepad, controllerInfo);
 
   const leftRaw = {
     x: clampAxis((gamepad.axes[0] || 0) - state.baseline.left.x),
@@ -482,26 +801,13 @@ function render() {
   const leftStats = updateStickStats("left", leftRaw);
   const rightStats = updateStickStats("right", rightRaw);
 
-  dom.leftStickStatus.textContent = leftStats.current > state.deadzone ? "Entrada fuera de la zona muerta" : "Reposo / dentro de zona muerta";
-  dom.rightStickStatus.textContent = rightStats.current > state.deadzone ? "Entrada fuera de la zona muerta" : "Reposo / dentro de zona muerta";
+  dom.leftStickStatus.textContent =
+    leftStats.current > state.deadzone ? t("outsideDeadzone") : t("insideDeadzone");
+  dom.rightStickStatus.textContent =
+    rightStats.current > state.deadzone ? t("outsideDeadzone") : t("insideDeadzone");
 
-  upsertMetrics(dom.leftStickMetrics, [
-    { label: "X crudo", value: formatSigned(leftRaw.x) },
-    { label: "Y crudo", value: formatSigned(leftRaw.y) },
-    { label: "Magnitud", value: leftStats.current.toFixed(3) },
-    { label: "Pico", value: leftStats.peak.toFixed(3) },
-    { label: "Promedio en reposo", value: leftStats.idleAverage.toFixed(3) },
-    { label: "Filtrado", value: `${formatSigned(leftFiltered.x)} / ${formatSigned(leftFiltered.y)}` },
-  ]);
-
-  upsertMetrics(dom.rightStickMetrics, [
-    { label: "X crudo", value: formatSigned(rightRaw.x) },
-    { label: "Y crudo", value: formatSigned(rightRaw.y) },
-    { label: "Magnitud", value: rightStats.current.toFixed(3) },
-    { label: "Pico", value: rightStats.peak.toFixed(3) },
-    { label: "Promedio en reposo", value: rightStats.idleAverage.toFixed(3) },
-    { label: "Filtrado", value: `${formatSigned(rightFiltered.x)} / ${formatSigned(rightFiltered.y)}` },
-  ]);
+  upsertMetrics(dom.leftStickMetrics, buildStickMetricList(leftStats, leftRaw, leftFiltered));
+  upsertMetrics(dom.rightStickMetrics, buildStickMetricList(rightStats, rightRaw, rightFiltered));
 
   const leftTrigger = gamepad.buttons[6]?.value || 0;
   const rightTrigger = gamepad.buttons[7]?.value || 0;
@@ -511,7 +817,7 @@ function render() {
   dom.leftTriggerFill.style.width = `${leftTrigger * 100}%`;
   dom.rightTriggerFill.style.width = `${rightTrigger * 100}%`;
 
-  updateButtonsGrid(labels, gamepad.buttons);
+  updateButtonsGrid(controllerInfo, gamepad.buttons);
 
   state.sampleCount += 1;
   dom.sampleCounter.textContent = String(state.sampleCount);
@@ -520,23 +826,35 @@ function render() {
   const signature = buildSignature(gamepad);
   captureTiming(gamepad, signature, now);
   drawHistory();
-
-  const avgFrameDelta = average(state.timing.frameDeltaHistory);
-  const pollHz = avgFrameDelta > 0 ? 1000 / avgFrameDelta : 0;
-  const frameJitter = standardDeviation(state.timing.frameDeltaHistory);
-  const estimatedLatency = average(state.timing.estimatedLatencyHistory);
-  const lastVisibleChange = state.timing.lastInputChange ? now - state.timing.lastInputChange : 0;
-
-  upsertMetrics(dom.timingMetrics, [
-    { label: "Polling estimado", value: pollHz ? `${pollHz.toFixed(1)} Hz` : "-" },
-    { label: "Frame medio", value: avgFrameDelta ? `${avgFrameDelta.toFixed(2)} ms` : "-" },
-    { label: "Jitter", value: `${frameJitter.toFixed(2)} ms` },
-    { label: "Retardo estimado", value: estimatedLatency ? `${estimatedLatency.toFixed(2)} ms` : "No disponible" },
-    { label: "Ultimo cambio visible", value: `${lastVisibleChange.toFixed(1)} ms` },
-    { label: "Timestamp", value: gamepad.timestamp ? `${gamepad.timestamp.toFixed(1)} ms` : "No expuesto" },
-  ]);
+  upsertMetrics(dom.timingMetrics, buildTimingMetricList(gamepad, now));
 
   requestAnimationFrame(render);
+}
+
+function applyLanguageToUi() {
+  document.documentElement.lang = state.language;
+  document.title = t("pageTitle");
+  dom.metaDescription.setAttribute("content", t("pageDescription"));
+  dom.translatable.forEach((node) => {
+    node.textContent = t(node.dataset.i18n);
+  });
+
+  dom.deadzoneValue.textContent = state.deadzone.toFixed(2);
+  dom.langEsBtn.classList.toggle("active", state.language === "es");
+  dom.langEnBtn.classList.toggle("active", state.language === "en");
+
+  updateGamepadSelect();
+}
+
+function changeLanguage(language) {
+  if (!TRANSLATIONS[language]) {
+    return;
+  }
+
+  state.language = language;
+  window.localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
+  applyLanguageToUi();
+  state.buttons = [];
 }
 
 function bindEvents() {
@@ -573,14 +891,23 @@ function bindEvents() {
     resetMetrics();
   });
 
+  dom.langEsBtn.addEventListener("click", () => {
+    changeLanguage("es");
+  });
+
+  dom.langEnBtn.addEventListener("click", () => {
+    changeLanguage("en");
+  });
+
   window.addEventListener("resize", () => {
     drawHistory();
   });
 }
 
 function init() {
-  updateGamepadSelect();
+  applyLanguageToUi();
   bindEvents();
+  setDisconnectedState();
   render();
 }
 

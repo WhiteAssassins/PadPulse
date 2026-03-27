@@ -1,0 +1,21 @@
+{
+  "name": "padpulse",
+  "version": "1.0.0",
+  "description": "Browser based controller tester for PS5, Xbox and generic gamepads.",
+  "private": false,
+  "license": "MIT",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "gamepad",
+    "controller",
+    "ps5",
+    "xbox",
+    "dualsense",
+    "drift-test",
+    "latency",
+    "browser"
+  ]
+}

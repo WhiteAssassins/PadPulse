@@ -20,15 +20,30 @@
   <div class="app-shell">
     <header class="hero">
       <div class="hero-copy">
-        <p class="eyebrow">PadPulse</p>
-        <h1>Test en vivo para mandos de PS5 y Xbox</h1>
-        <p class="hero-text">
-          Conecta un mando por USB o Bluetooth y revisa sticks, botones, gatillos,
-          drift, polling del navegador y una estimacion de retardo capturada desde la Gamepad API.
+        <div class="hero-topbar">
+          <p class="eyebrow">PadPulse</p>
+
+          <div class="lang-switch" role="group" aria-label="Language selector">
+            <button id="langEsBtn" class="lang-btn" type="button" data-lang-option="es">ES</button>
+            <button id="langEnBtn" class="lang-btn" type="button" data-lang-option="en">EN</button>
+          </div>
+        </div>
+
+        <h1 data-i18n="heroTitle">Live PS5 and Xbox controller tester</h1>
+        <p class="hero-text" data-i18n="heroText">
+          Plug in a controller through USB or Bluetooth and inspect sticks, buttons, triggers,
+          drift, browser polling and a latency estimate built from the Gamepad API.
         </p>
+
+        <div class="hero-badges">
+          <span class="hero-badge" data-i18n="badgePrivate">Local only</span>
+          <span class="hero-badge" data-i18n="badgeBrowser">Browser based</span>
+          <span class="hero-badge" data-i18n="badgeSupport">PS5, Xbox and generic pads</span>
+        </div>
+
         <div class="hero-actions">
-          <button id="calibrateBtn" class="primary-btn" type="button">Calibrar centro</button>
-          <button id="resetBtn" class="ghost-btn" type="button">Reiniciar metricas</button>
+          <button id="calibrateBtn" class="primary-btn" type="button" data-i18n="calibrateBtn">Calibrate center</button>
+          <button id="resetBtn" class="ghost-btn" type="button" data-i18n="resetBtn">Reset metrics</button>
         </div>
       </div>
 
@@ -47,45 +62,66 @@
     <main class="dashboard">
       <section class="workspace workspace-status">
         <div class="section-heading">
-          <p class="section-kicker">Estado</p>
-          <h2>Conexion y captura</h2>
+          <p class="section-kicker" data-i18n="statusKicker">Status</p>
+          <h2 data-i18n="statusTitle">Connection and capture</h2>
         </div>
 
         <div class="status-strip">
           <div>
-            <span class="label">Estado</span>
-            <strong id="connectionState">Sin mando conectado</strong>
+            <span class="label" data-i18n="stateLabel">State</span>
+            <strong id="connectionState">No controller connected</strong>
           </div>
           <div>
-            <span class="label">Perfil</span>
-            <strong id="controllerType">No detectado</strong>
+            <span class="label" data-i18n="familyLabel">Family</span>
+            <strong id="controllerType">Not detected</strong>
           </div>
           <div>
-            <span class="label">Mapping</span>
+            <span class="label" data-i18n="modelLabel">Model</span>
+            <strong id="controllerModel">Unknown model</strong>
+          </div>
+          <div>
+            <span class="label" data-i18n="idsLabel">Vendor / Product</span>
+            <strong id="hardwareIds">Not exposed</strong>
+          </div>
+          <div>
+            <span class="label" data-i18n="mappingLabel">Mapping</span>
             <strong id="mappingState">-</strong>
           </div>
           <div>
-            <span class="label">Muestras</span>
+            <span class="label" data-i18n="samplesLabel">Samples</span>
             <strong id="sampleCounter">0</strong>
           </div>
         </div>
 
         <div class="control-row">
           <label class="field">
-            <span>Mando activo</span>
+            <span data-i18n="activeControllerLabel">Active controller</span>
             <select id="gamepadSelect"></select>
           </label>
 
           <label class="field">
-            <span>Zona muerta: <strong id="deadzoneValue">0.08</strong></span>
+            <span><span data-i18n="deadzoneLabel">Deadzone</span>: <strong id="deadzoneValue">0.08</strong></span>
             <input id="deadzoneRange" type="range" min="0" max="0.25" step="0.01" value="0.08">
           </label>
 
           <div class="note">
-            <span class="label">Nota</span>
-            <p>
-              La latencia real del hardware no es accesible desde el navegador. Esta demo muestra una
-              estimacion basada en `timestamp`, el ciclo de `requestAnimationFrame` y los cambios de estado visibles.
+            <span class="label" data-i18n="noteLabel">Note</span>
+            <p id="latencyNote" data-i18n="latencyNote">
+              Real hardware latency is not exposed to the browser. This demo shows an estimate based on
+              `timestamp`, `requestAnimationFrame` cadence and visible input changes.
+            </p>
+          </div>
+        </div>
+
+        <div class="meta-strip">
+          <div class="meta-item">
+            <span class="label" data-i18n="rawIdLabel">Raw gamepad id</span>
+            <code id="rawIdState" class="mono">-</code>
+          </div>
+          <div class="meta-item">
+            <span class="label" data-i18n="privacyLabel">Privacy</span>
+            <p id="privacyText" data-i18n="privacyText">
+              Everything runs locally in your browser. No controller data is uploaded anywhere.
             </p>
           </div>
         </div>
@@ -94,15 +130,15 @@
       <section class="workspace workspace-grid">
         <div class="panel">
           <div class="section-heading">
-            <p class="section-kicker">Sticks</p>
-            <h2>Drift y precision</h2>
+            <p class="section-kicker" data-i18n="sticksKicker">Sticks</p>
+            <h2 data-i18n="sticksTitle">Drift and precision</h2>
           </div>
 
           <div class="sticks-layout">
             <article class="stick-module">
               <div class="stick-header">
-                <h3>Stick izquierdo</h3>
-                <p id="leftStickStatus">Esperando señal</p>
+                <h3 data-i18n="leftStickTitle">Left stick</h3>
+                <p id="leftStickStatus">Waiting for signal</p>
               </div>
               <div class="stick-stage">
                 <div id="leftStickArena" class="stick-arena">
@@ -117,8 +153,8 @@
 
             <article class="stick-module">
               <div class="stick-header">
-                <h3>Stick derecho</h3>
-                <p id="rightStickStatus">Esperando señal</p>
+                <h3 data-i18n="rightStickTitle">Right stick</h3>
+                <p id="rightStickStatus">Waiting for signal</p>
               </div>
               <div class="stick-stage">
                 <div id="rightStickArena" class="stick-arena">
@@ -135,8 +171,8 @@
 
         <div class="panel panel-trace">
           <div class="section-heading">
-            <p class="section-kicker">Traza</p>
-            <h2>Historial en tiempo real</h2>
+            <p class="section-kicker" data-i18n="traceKicker">Trace</p>
+            <h2 data-i18n="traceTitle">Realtime history</h2>
           </div>
 
           <div class="trace-legend">
@@ -153,8 +189,8 @@
 
         <div class="panel">
           <div class="section-heading">
-            <p class="section-kicker">Entradas</p>
-            <h2>Botones y gatillos</h2>
+            <p class="section-kicker" data-i18n="inputsKicker">Inputs</p>
+            <h2 data-i18n="inputsTitle">Buttons and triggers</h2>
           </div>
 
           <div class="trigger-stack">
@@ -178,6 +214,11 @@
         </div>
       </section>
     </main>
+
+    <footer class="project-footer">
+      <p data-i18n="footerLineOne">PadPulse is a static browser project built to test controller input without installing native software.</p>
+      <p data-i18n="footerLineTwo">It works best on localhost and modern Chromium based browsers with Gamepad API support.</p>
+    </footer>
   </div>
 
   <template id="metricTemplate">
