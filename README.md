@@ -1,6 +1,6 @@
 # PadPulse
 
-PadPulse is a browser based controller tester for PS5, Xbox and generic gamepads. It helps you inspect drift, deadzone behavior, triggers, buttons, axis history, browser polling and approximate controller model detection from the Gamepad API.
+PadPulse is a browser based controller tester for PS5, Xbox, Switch and major third-party gamepads. It helps you inspect drift, deadzone behavior, triggers, buttons, axis history, browser polling and approximate controller model detection from the Gamepad API.
 
 Created by **Christopher David Alberto Roque - White Assassins** with **AEWhiteDevs**.
 
@@ -8,11 +8,12 @@ Created by **Christopher David Alberto Roque - White Assassins** with **AEWhiteD
 
 ### Que es
 
-PadPulse es una web estatica para probar mandos desde el navegador. Esta pensada para revisar drift, zona muerta, sticks, botones, gatillos, historial de ejes y una estimacion de respuesta basada en la Gamepad API.
+PadPulse es una web estatica para probar mandos desde el navegador. Esta pensada para revisar drift, zona muerta, sticks, botones, gatillos, historial de ejes y una estimacion de respuesta basada en la Gamepad API para PlayStation, Xbox, Nintendo Switch y marcas importantes.
 
 ### Funciones principales
 
 - Deteccion de familia y modelo aproximado del mando.
+- Base ampliada de deteccion para PlayStation, Xbox, Nintendo, 8BitDo, Razer, Backbone, PowerA, HORI, PDP, GameSir, Nacon, SCUF y mas.
 - Extraccion de `vendorId` y `productId` cuando el navegador los expone en `gamepad.id`.
 - Interfaz bilingue en espanol e ingles.
 - Modo adaptativo `Auto / Full / Consola` con deteccion del entorno de acceso.
@@ -71,11 +72,12 @@ Si PowerShell bloquea `npm.ps1`, usa `node server.js` directamente.
 
 ### What it is
 
-PadPulse is a static browser app for testing controllers directly from the web. It lets you inspect drift, deadzone behavior, buttons, triggers, axis history and an estimated response signal built on top of the Gamepad API.
+PadPulse is a static browser app for testing controllers directly from the web. It lets you inspect drift, deadzone behavior, buttons, triggers, axis history and an estimated response signal built on top of the Gamepad API for PlayStation, Xbox, Nintendo Switch and major third-party brands.
 
 ### Main features
 
 - Approximate controller family and model detection.
+- Expanded detection base for PlayStation, Xbox, Nintendo, 8BitDo, Razer, Backbone, PowerA, HORI, PDP, GameSir, Nacon, SCUF and more.
 - `vendorId` and `productId` extraction when the browser exposes them through `gamepad.id`.
 - Spanish and English interface.
 - Adaptive `Auto / Full / Console` view mode with environment detection.

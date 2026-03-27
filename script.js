@@ -18,18 +18,74 @@ const GUIDE_STEP_IDS = [
 ];
 
 const MODEL_DATABASE = {
+  "054c:0268": { vendor: "Sony", family: "playstation", model: "DualShock 3" },
   "054c:05c4": { vendor: "Sony", family: "playstation", model: "DualShock 4" },
   "054c:09cc": { vendor: "Sony", family: "playstation", model: "DualShock 4 v2" },
   "054c:0ce6": { vendor: "Sony", family: "playstation", model: "DualSense" },
   "054c:0df2": { vendor: "Sony", family: "playstation", model: "DualSense Edge" },
+  "054c:0e5f": { vendor: "Sony", family: "playstation", model: "PlayStation Access Controller" },
   "045e:028e": { vendor: "Microsoft", family: "xbox", model: "Xbox 360 Controller" },
   "045e:02d1": { vendor: "Microsoft", family: "xbox", model: "Xbox One Controller" },
   "045e:02dd": { vendor: "Microsoft", family: "xbox", model: "Xbox One Controller" },
   "045e:02e0": { vendor: "Microsoft", family: "xbox", model: "Xbox One S Controller" },
   "045e:02ea": { vendor: "Microsoft", family: "xbox", model: "Xbox One S Controller" },
   "045e:02fd": { vendor: "Microsoft", family: "xbox", model: "Xbox One S Controller" },
+  "045e:0b00": { vendor: "Microsoft", family: "xbox", model: "Xbox Elite Series 2 Controller" },
+  "045e:0b05": { vendor: "Microsoft", family: "xbox", model: "Xbox Elite Series 2 Controller" },
   "045e:0b12": { vendor: "Microsoft", family: "xbox", model: "Xbox Series X|S Controller" },
   "045e:0b13": { vendor: "Microsoft", family: "xbox", model: "Xbox Series X|S Controller" },
+  "057e:2006": { vendor: "Nintendo", family: "nintendo", model: "Joy-Con (L)" },
+  "057e:2007": { vendor: "Nintendo", family: "nintendo", model: "Joy-Con (R)" },
+  "057e:2009": { vendor: "Nintendo", family: "nintendo", model: "Nintendo Switch Pro Controller" },
+  "057e:200e": { vendor: "Nintendo", family: "nintendo", model: "Joy-Con Charging Grip" },
+  "057e:2017": { vendor: "Nintendo", family: "nintendo", model: "Nintendo Switch SNES Controller" },
+  "057e:2019": { vendor: "Nintendo", family: "nintendo", model: "Nintendo 64 Controller" },
+  "057e:201e": { vendor: "Nintendo", family: "nintendo", model: "Nintendo Genesis Controller" },
+  "0955:7214": { vendor: "NVIDIA", family: "generic", model: "NVIDIA Shield Controller" },
+  "0e6f:0173": { vendor: "PDP", family: "generic", model: "PDP PS4 Controller" },
+  "1532:0705": { vendor: "Razer", family: "generic", model: "Razer Raiju Mobile" },
+  "1532:1000": { vendor: "Razer", family: "playstation", model: "Razer Raiju" },
+  "1532:100a": { vendor: "Razer", family: "playstation", model: "Razer Raiju Tournament Edition" },
+  "1532:100b": { vendor: "Razer", family: "playstation", model: "Razer Wolverine PS5 Controller" },
+  "1532:0a14": { vendor: "Razer", family: "xbox", model: "Razer Wolverine Ultimate Xbox" },
+  "27f8:0bbf": { vendor: "Razer", family: "generic", model: "Razer Kishi" },
+  "28de:1102": { vendor: "Valve", family: "generic", model: "Steam Controller" },
+  "28de:1142": { vendor: "Valve", family: "generic", model: "Steam Controller Wireless" },
+  "28de:1205": { vendor: "Valve", family: "generic", model: "Steam Deck Controls" },
+  "2dc8:0021": { vendor: "8BitDo", family: "generic", model: "8BitDo SN30 Pro" },
+  "2dc8:0060": { vendor: "8BitDo", family: "generic", model: "8BitDo SF30 Pro" },
+  "2dc8:0061": { vendor: "8BitDo", family: "generic", model: "8BitDo SF30 Pro" },
+  "2dc8:0160": { vendor: "8BitDo", family: "generic", model: "8BitDo SN30 Pro" },
+  "2dc8:0161": { vendor: "8BitDo", family: "generic", model: "8BitDo SN30 Pro" },
+  "2dc8:0260": { vendor: "8BitDo", family: "generic", model: "8BitDo SN30 Pro+" },
+  "2dc8:0261": { vendor: "8BitDo", family: "generic", model: "8BitDo SN30 Pro+" },
+  "2dc8:0360": { vendor: "8BitDo", family: "generic", model: "8BitDo Pro 2" },
+  "2dc8:0361": { vendor: "8BitDo", family: "generic", model: "8BitDo Pro 2" },
+  "2dc8:0660": { vendor: "8BitDo", family: "generic", model: "8BitDo Pro 2" },
+  "2dc8:1230": { vendor: "8BitDo", family: "generic", model: "8BitDo Ultimate" },
+  "2dc8:1260": { vendor: "8BitDo", family: "generic", model: "8BitDo Ultimate 2" },
+  "2dc8:1b30": { vendor: "8BitDo", family: "generic", model: "8BitDo Ultimate 2C" },
+  "2dc8:1c30": { vendor: "8BitDo", family: "generic", model: "8BitDo Ultimate 2C" },
+  "358a:0103": { vendor: "Backbone", family: "generic", model: "Backbone One" },
+  "358a:0104": { vendor: "Backbone", family: "generic", model: "Backbone One" },
+};
+
+const VENDOR_DATABASE = {
+  "054c": { vendor: "Sony", family: "playstation", model: "PlayStation Controller" },
+  "045e": { vendor: "Microsoft", family: "xbox", model: "Xbox Wireless Controller" },
+  "057e": { vendor: "Nintendo", family: "nintendo", model: "Nintendo Controller" },
+  "0955": { vendor: "NVIDIA", family: "generic", model: "NVIDIA Controller" },
+  "0e6f": { vendor: "PDP", family: "generic", model: "PDP Controller" },
+  "0f0d": { vendor: "HORI", family: "generic", model: "HORI Controller" },
+  "1038": { vendor: "SteelSeries", family: "generic", model: "SteelSeries Controller" },
+  "146b": { vendor: "Nacon", family: "generic", model: "Nacon Controller" },
+  "1532": { vendor: "Razer", family: "generic", model: "Razer Controller" },
+  "24c6": { vendor: "PowerA", family: "generic", model: "PowerA Controller" },
+  "28de": { vendor: "Valve", family: "generic", model: "Steam Controller" },
+  "2dc8": { vendor: "8BitDo", family: "generic", model: "8BitDo Controller" },
+  "358a": { vendor: "Backbone", family: "generic", model: "Backbone One" },
+  "044f": { vendor: "Thrustmaster", family: "generic", model: "Thrustmaster Controller" },
+  "0738": { vendor: "Mad Catz", family: "generic", model: "Mad Catz Controller" },
 };
 
 const BUTTON_LABELS = {
@@ -73,19 +129,39 @@ const BUTTON_LABELS = {
     "Xbox",
     "Share",
   ],
+  nintendo: [
+    "B",
+    "A",
+    "Y",
+    "X",
+    "L",
+    "R",
+    "ZL",
+    "ZR",
+    "Minus",
+    "Plus",
+    "LS",
+    "RS",
+    "D-pad Up",
+    "D-pad Down",
+    "D-pad Left",
+    "D-pad Right",
+    "Home",
+    "Capture",
+  ],
 };
 
 const TRANSLATIONS = {
   es: {
-    pageTitle: "PadPulse | Test de mandos PS5 y Xbox",
+    pageTitle: "PadPulse | Test de mandos PS5, Xbox y Switch",
     pageDescription:
-      "Web de prueba para mandos PS5, Xbox y gamepads genericos con drift, respuesta, polling y diagnostico de sticks.",
-    heroTitle: "Test en vivo para mandos PS5 y Xbox",
+      "Web de prueba para mandos PS5, Xbox, Switch y gamepads de marcas importantes con drift, respuesta, polling y diagnostico de sticks.",
+    heroTitle: "Test en vivo para mandos PS5, Xbox, Switch y mas",
     heroText:
-      "Conecta un mando por USB o Bluetooth y revisa sticks, botones, gatillos, drift, polling del navegador y una estimacion de retardo construida con la Gamepad API.",
+      "Conecta un mando por USB o Bluetooth y revisa sticks, botones, gatillos, drift, polling del navegador y una estimacion de retardo construida con la Gamepad API para PlayStation, Xbox, Nintendo y marcas importantes.",
     badgePrivate: "Solo local",
     badgeBrowser: "Basado en navegador",
-    badgeSupport: "PS5, Xbox y mandos genericos",
+    badgeSupport: "PS5, Xbox, Switch y terceros",
     calibrateBtn: "Calibrar centro",
     resetBtn: "Reiniciar metricas",
     statusKicker: "Estado",
@@ -194,6 +270,7 @@ const TRANSLATIONS = {
     genericFamily: "Gamepad generico",
     playStationFamily: "PlayStation",
     xboxFamily: "Xbox",
+    nintendoFamily: "Nintendo",
     unsupportedFamily: "Controlador desconocido",
     estimatedPolling: "Polling estimado",
     averageFrame: "Frame medio",
@@ -261,15 +338,15 @@ const TRANSLATIONS = {
     savedAt: "Guardado",
   },
   en: {
-    pageTitle: "PadPulse | PS5 and Xbox controller tester",
+    pageTitle: "PadPulse | PS5, Xbox and Switch controller tester",
     pageDescription:
-      "Browser based tester for PS5, Xbox and generic gamepads with drift, response, polling and stick diagnostics.",
-    heroTitle: "Live PS5 and Xbox controller tester",
+      "Browser based tester for PS5, Xbox, Switch and major third-party gamepads with drift, response, polling and stick diagnostics.",
+    heroTitle: "Live PS5, Xbox, Switch and more controller tester",
     heroText:
-      "Connect a controller over USB or Bluetooth and inspect sticks, buttons, triggers, drift, browser polling and a latency estimate built from the Gamepad API.",
+      "Connect a controller over USB or Bluetooth and inspect sticks, buttons, triggers, drift, browser polling and a latency estimate built from the Gamepad API for PlayStation, Xbox, Nintendo and major brands.",
     badgePrivate: "Local only",
     badgeBrowser: "Browser based",
-    badgeSupport: "PS5, Xbox and generic pads",
+    badgeSupport: "PS5, Xbox, Switch and third-party pads",
     calibrateBtn: "Calibrate center",
     resetBtn: "Reset metrics",
     statusKicker: "Status",
@@ -378,6 +455,7 @@ const TRANSLATIONS = {
     genericFamily: "Generic gamepad",
     playStationFamily: "PlayStation",
     xboxFamily: "Xbox",
+    nintendoFamily: "Nintendo",
     unsupportedFamily: "Unknown controller",
     estimatedPolling: "Estimated polling",
     averageFrame: "Average frame",
@@ -743,21 +821,249 @@ function inferProfileFromId(id, vendorId, productId) {
   if (exact) {
     return exact;
   }
+  if (normalized.includes("playstation access")) {
+    return { vendor: "Sony", family: "playstation", model: "PlayStation Access Controller" };
+  }
   if (normalized.includes("dualsense edge")) {
     return { vendor: "Sony", family: "playstation", model: "DualSense Edge" };
   }
   if (normalized.includes("dualsense")) {
     return { vendor: "Sony", family: "playstation", model: "DualSense" };
   }
-  if (normalized.includes("dualshock") || normalized.includes("wireless controller") || vendorId === "054c") {
+  if (normalized.includes("dualshock 4")) {
+    return { vendor: "Sony", family: "playstation", model: "DualShock 4" };
+  }
+  if (normalized.includes("dualshock 3")) {
+    return { vendor: "Sony", family: "playstation", model: "DualShock 3" };
+  }
+  if (
+    normalized.includes("dualshock") ||
+    vendorId === "054c" ||
+    (normalized.includes("wireless controller") &&
+      !normalized.includes("xbox") &&
+      !normalized.includes("nintendo") &&
+      !normalized.includes("switch") &&
+      !normalized.includes("backbone"))
+  ) {
     return { vendor: "Sony", family: "playstation", model: "PlayStation Controller" };
+  }
+  if (normalized.includes("xbox elite series 2") || normalized.includes("xbox one elite 2") || normalized.includes("elite 2")) {
+    return { vendor: "Microsoft", family: "xbox", model: "Xbox Elite Series 2 Controller" };
   }
   if (normalized.includes("xbox elite")) {
     return { vendor: "Microsoft", family: "xbox", model: "Xbox Elite Controller" };
   }
+  if (normalized.includes("xbox series")) {
+    return { vendor: "Microsoft", family: "xbox", model: "Xbox Series X|S Controller" };
+  }
+  if (normalized.includes("xbox one s")) {
+    return { vendor: "Microsoft", family: "xbox", model: "Xbox One S Controller" };
+  }
+  if (normalized.includes("xbox one")) {
+    return { vendor: "Microsoft", family: "xbox", model: "Xbox One Controller" };
+  }
+  if (normalized.includes("xbox 360")) {
+    return { vendor: "Microsoft", family: "xbox", model: "Xbox 360 Controller" };
+  }
   if (normalized.includes("xbox") || normalized.includes("xinput") || vendorId === "045e") {
     return { vendor: "Microsoft", family: "xbox", model: "Xbox Wireless Controller" };
   }
+  if (normalized.includes("joy-con (l/r)") || normalized.includes("joy-con pair")) {
+    return { vendor: "Nintendo", family: "nintendo", model: "Joy-Con Pair" };
+  }
+  if (normalized.includes("joy-con (l)") || normalized.includes("joy-con l") || normalized.includes("left joy-con")) {
+    return { vendor: "Nintendo", family: "nintendo", model: "Joy-Con (L)" };
+  }
+  if (normalized.includes("joy-con (r)") || normalized.includes("joy-con r") || normalized.includes("right joy-con")) {
+    return { vendor: "Nintendo", family: "nintendo", model: "Joy-Con (R)" };
+  }
+  if (normalized.includes("switch pro") || (normalized.includes("nintendo") && normalized.includes("pro controller"))) {
+    return { vendor: "Nintendo", family: "nintendo", model: "Nintendo Switch Pro Controller" };
+  }
+  if (normalized.includes("snes controller")) {
+    return { vendor: "Nintendo", family: "nintendo", model: "Nintendo Switch SNES Controller" };
+  }
+  if (normalized.includes("n64 controller") || normalized.includes("nintendo 64 controller")) {
+    return { vendor: "Nintendo", family: "nintendo", model: "Nintendo 64 Controller" };
+  }
+  if (normalized.includes("genesis controller")) {
+    return { vendor: "Nintendo", family: "nintendo", model: "Nintendo Genesis Controller" };
+  }
+  if (normalized.includes("joy-con") || normalized.includes("nintendo switch") || vendorId === "057e") {
+    return { vendor: "Nintendo", family: "nintendo", model: "Nintendo Controller" };
+  }
+  if (normalized.includes("backbone one")) {
+    return { vendor: "Backbone", family: "generic", model: "Backbone One" };
+  }
+  if (normalized.includes("razer kishi v2")) {
+    return { vendor: "Razer", family: "generic", model: "Razer Kishi V2" };
+  }
+  if (normalized.includes("razer kishi")) {
+    return { vendor: "Razer", family: "generic", model: "Razer Kishi" };
+  }
+  if (normalized.includes("razer wolverine")) {
+    return {
+      vendor: "Razer",
+      family: normalized.includes("xbox") ? "xbox" : normalized.includes("ps5") || normalized.includes("ps4") ? "playstation" : "generic",
+      model: normalized.includes("ultimate") ? "Razer Wolverine Ultimate" : "Razer Wolverine",
+    };
+  }
+  if (normalized.includes("razer wildcat")) {
+    return { vendor: "Razer", family: "xbox", model: "Razer Wildcat" };
+  }
+  if (normalized.includes("razer raiju mobile")) {
+    return { vendor: "Razer", family: "generic", model: "Razer Raiju Mobile" };
+  }
+  if (normalized.includes("razer raiju")) {
+    return { vendor: "Razer", family: "playstation", model: "Razer Raiju" };
+  }
+  if (normalized.includes("razer")) {
+    return { vendor: "Razer", family: "generic", model: "Razer Controller" };
+  }
+  if (normalized.includes("8bitdo ultimate 2c")) {
+    return { vendor: "8BitDo", family: "generic", model: "8BitDo Ultimate 2C" };
+  }
+  if (normalized.includes("8bitdo ultimate 2")) {
+    return { vendor: "8BitDo", family: "generic", model: "8BitDo Ultimate 2" };
+  }
+  if (normalized.includes("8bitdo ultimate")) {
+    return { vendor: "8BitDo", family: "generic", model: "8BitDo Ultimate" };
+  }
+  if (normalized.includes("8bitdo pro 3")) {
+    return { vendor: "8BitDo", family: "generic", model: "8BitDo Pro 3" };
+  }
+  if (normalized.includes("8bitdo pro 2")) {
+    return { vendor: "8BitDo", family: "generic", model: "8BitDo Pro 2" };
+  }
+  if (normalized.includes("8bitdo sn30 pro+") || normalized.includes("8bitdo sn30 pro plus")) {
+    return { vendor: "8BitDo", family: "generic", model: "8BitDo SN30 Pro+" };
+  }
+  if (normalized.includes("8bitdo sn30 pro")) {
+    return { vendor: "8BitDo", family: "generic", model: "8BitDo SN30 Pro" };
+  }
+  if (normalized.includes("8bitdo sf30 pro")) {
+    return { vendor: "8BitDo", family: "generic", model: "8BitDo SF30 Pro" };
+  }
+  if (normalized.includes("8bitdo lite 2")) {
+    return { vendor: "8BitDo", family: "generic", model: "8BitDo Lite 2" };
+  }
+  if (normalized.includes("8bitdo lite se")) {
+    return { vendor: "8BitDo", family: "generic", model: "8BitDo Lite SE" };
+  }
+  if (normalized.includes("8bitdo micro")) {
+    return { vendor: "8BitDo", family: "generic", model: "8BitDo Micro" };
+  }
+  if (normalized.includes("8bitdo")) {
+    return { vendor: "8BitDo", family: "generic", model: "8BitDo Controller" };
+  }
+  if (normalized.includes("powera") && normalized.includes("switch")) {
+    return { vendor: "PowerA", family: "nintendo", model: "PowerA Nintendo Switch Controller" };
+  }
+  if (normalized.includes("powera") && normalized.includes("xbox")) {
+    return { vendor: "PowerA", family: "xbox", model: "PowerA Xbox Controller" };
+  }
+  if (normalized.includes("powera") && (normalized.includes("ps5") || normalized.includes("ps4") || normalized.includes("playstation"))) {
+    return { vendor: "PowerA", family: "playstation", model: "PowerA PlayStation Controller" };
+  }
+  if (normalized.includes("powera")) {
+    return { vendor: "PowerA", family: "generic", model: "PowerA Controller" };
+  }
+  if (normalized.includes("hori") && normalized.includes("switch")) {
+    return { vendor: "HORI", family: "nintendo", model: "HORI Nintendo Switch Controller" };
+  }
+  if (normalized.includes("hori") && normalized.includes("xbox")) {
+    return { vendor: "HORI", family: "xbox", model: "HORI Xbox Controller" };
+  }
+  if (normalized.includes("hori") && (normalized.includes("ps5") || normalized.includes("ps4") || normalized.includes("playstation"))) {
+    return { vendor: "HORI", family: "playstation", model: "HORI PlayStation Controller" };
+  }
+  if (normalized.includes("hori")) {
+    return { vendor: "HORI", family: "generic", model: "HORI Controller" };
+  }
+  if (normalized.includes("pdp") && normalized.includes("switch")) {
+    return { vendor: "PDP", family: "nintendo", model: "PDP Nintendo Switch Controller" };
+  }
+  if (normalized.includes("pdp") && normalized.includes("xbox")) {
+    return { vendor: "PDP", family: "xbox", model: "PDP Xbox Controller" };
+  }
+  if (normalized.includes("pdp") && (normalized.includes("ps5") || normalized.includes("ps4") || normalized.includes("playstation"))) {
+    return { vendor: "PDP", family: "playstation", model: "PDP PlayStation Controller" };
+  }
+  if (normalized.includes("pdp")) {
+    return { vendor: "PDP", family: "generic", model: "PDP Controller" };
+  }
+  if (normalized.includes("gamesir") && normalized.includes("switch")) {
+    return { vendor: "GameSir", family: "nintendo", model: "GameSir Nintendo Switch Controller" };
+  }
+  if (normalized.includes("gamesir") && normalized.includes("xbox")) {
+    return { vendor: "GameSir", family: "xbox", model: "GameSir Xbox Controller" };
+  }
+  if (normalized.includes("gamesir")) {
+    return { vendor: "GameSir", family: "generic", model: "GameSir Controller" };
+  }
+  if (normalized.includes("nacon") && normalized.includes("revolution")) {
+    return { vendor: "Nacon", family: "playstation", model: "Nacon Revolution Pro Controller" };
+  }
+  if (normalized.includes("nacon") && normalized.includes("switch")) {
+    return { vendor: "Nacon", family: "nintendo", model: "Nacon Nintendo Switch Controller" };
+  }
+  if (normalized.includes("nacon") && normalized.includes("xbox")) {
+    return { vendor: "Nacon", family: "xbox", model: "Nacon Xbox Controller" };
+  }
+  if (normalized.includes("nacon")) {
+    return { vendor: "Nacon", family: "generic", model: "Nacon Controller" };
+  }
+  if (normalized.includes("scuf") && normalized.includes("xbox")) {
+    return { vendor: "SCUF", family: "xbox", model: "SCUF Xbox Controller" };
+  }
+  if (normalized.includes("scuf") && (normalized.includes("ps5") || normalized.includes("ps4") || normalized.includes("playstation"))) {
+    return { vendor: "SCUF", family: "playstation", model: "SCUF PlayStation Controller" };
+  }
+  if (normalized.includes("scuf")) {
+    return { vendor: "SCUF", family: "generic", model: "SCUF Controller" };
+  }
+  if (normalized.includes("steelseries stratus")) {
+    return { vendor: "SteelSeries", family: "generic", model: "SteelSeries Stratus" };
+  }
+  if (normalized.includes("steelseries")) {
+    return { vendor: "SteelSeries", family: "generic", model: "SteelSeries Controller" };
+  }
+  if (normalized.includes("logitech f310")) {
+    return { vendor: "Logitech", family: "generic", model: "Logitech F310" };
+  }
+  if (normalized.includes("logitech f710")) {
+    return { vendor: "Logitech", family: "generic", model: "Logitech F710" };
+  }
+  if (normalized.includes("logitech")) {
+    return { vendor: "Logitech", family: "generic", model: "Logitech Gamepad" };
+  }
+  if (normalized.includes("thrustmaster") && normalized.includes("eswap")) {
+    return { vendor: "Thrustmaster", family: "generic", model: "Thrustmaster eSwap Controller" };
+  }
+  if (normalized.includes("thrustmaster")) {
+    return { vendor: "Thrustmaster", family: "generic", model: "Thrustmaster Controller" };
+  }
+  if (normalized.includes("luna")) {
+    return { vendor: "Amazon", family: "generic", model: "Amazon Luna Controller" };
+  }
+  if (normalized.includes("stadia")) {
+    return { vendor: "Google", family: "generic", model: "Google Stadia Controller" };
+  }
+  if (normalized.includes("steam deck")) {
+    return { vendor: "Valve", family: "generic", model: "Steam Deck Controls" };
+  }
+  if (normalized.includes("steam controller")) {
+    return { vendor: "Valve", family: "generic", model: "Steam Controller" };
+  }
+  if (normalized.includes("shield controller") || normalized.includes("thunderstrike")) {
+    return { vendor: "NVIDIA", family: "generic", model: "NVIDIA Shield Controller" };
+  }
+
+  const vendorFallback = vendorId ? VENDOR_DATABASE[vendorId] : null;
+  if (vendorFallback) {
+    return vendorFallback;
+  }
+
   return { vendor: null, family: "generic", model: t("unknownModel") };
 }
 
@@ -768,10 +1074,26 @@ function familyLabelFor(family) {
   if (family === "xbox") {
     return t("xboxFamily");
   }
+  if (family === "nintendo") {
+    return t("nintendoFamily");
+  }
   if (family === "generic") {
     return t("genericFamily");
   }
   return t("unsupportedFamily");
+}
+
+function triggerLabelsForFamily(family) {
+  if (family === "playstation") {
+    return { left: "L2", right: "R2" };
+  }
+  if (family === "xbox") {
+    return { left: "LT", right: "RT" };
+  }
+  if (family === "nintendo") {
+    return { left: "ZL", right: "ZR" };
+  }
+  return { left: "Trigger L", right: "Trigger R" };
 }
 
 function buttonLabelsForFamily(family) {
@@ -785,6 +1107,7 @@ function buildControllerInfo(gamepad) {
   const ids = parseIdsFromGamepadId(gamepad.id);
   const inferred = inferProfileFromId(gamepad.id, ids.vendorId, ids.productId);
   const family = inferred.family || "generic";
+  const triggerLabels = triggerLabelsForFamily(family);
   return {
     family,
     familyLabel: familyLabelFor(family),
@@ -795,8 +1118,8 @@ function buildControllerInfo(gamepad) {
     hardwareIds: ids.vendorId && ids.productId ? `${ids.vendorId.toUpperCase()}:${ids.productId.toUpperCase()}` : t("notExposed"),
     rawId: gamepad.id && gamepad.id.trim() ? gamepad.id : t("noRawId"),
     mapping: gamepad.mapping || t("noMapping"),
-    leftTrigger: family === "playstation" ? "L2" : family === "xbox" ? "LT" : "Trigger L",
-    rightTrigger: family === "playstation" ? "R2" : family === "xbox" ? "RT" : "Trigger R",
+    leftTrigger: triggerLabels.left,
+    rightTrigger: triggerLabels.right,
     buttons: buttonLabelsForFamily(family),
   };
 }
