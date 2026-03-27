@@ -4,16 +4,6 @@ PadPulse is a browser based controller tester for PS5, Xbox and generic gamepads
 
 Created by **Christopher David Alberto Roque - White Assassins** with **AEWhiteDevs**.
 
-## GitHub metadata
-
-### Suggested description
-
-Browser based controller tester for PS5, Xbox and generic gamepads with drift, deadzone, polling and model detection.
-
-### Suggested topics
-
-`gamepad`, `controller`, `ps5`, `xbox`, `dualsense`, `drift-test`, `gamepad-api`, `latency`, `diagnostics`, `javascript`, `html`, `css`, `github-pages`
-
 ## Espanol
 
 ### Que es
@@ -25,6 +15,7 @@ PadPulse es una web estatica para probar mandos desde el navegador. Esta pensada
 - Deteccion de familia y modelo aproximado del mando.
 - Extraccion de `vendorId` y `productId` cuando el navegador los expone en `gamepad.id`.
 - Interfaz bilingue en espanol e ingles.
+- Modo adaptativo `Auto / Full / Consola` con deteccion del entorno de acceso.
 - Navegacion por pestañas para evitar una pagina excesivamente larga.
 - Visualizacion en vivo de drift y zona muerta en ambos sticks.
 - Historial de ejes en tiempo real.
@@ -72,6 +63,7 @@ Si PowerShell bloquea `npm.ps1`, usa `node server.js` directamente.
 
 - La latencia real del hardware no se puede medir con precision desde una web. PadPulse muestra una estimacion basada en `timestamp`, `requestAnimationFrame` y cambios visibles en la entrada.
 - La deteccion exacta del modelo depende de lo que exponga cada navegador y cada sistema operativo.
+- El modo `Auto` intenta detectar escritorio, movil o navegador de consola para adaptar la presentacion, pero la experiencia completa sigue disponible si el usuario fuerza `Full`.
 - La aplicacion funciona mejor en navegadores Chromium modernos.
 - No se suben datos del mando a ningun servidor desde la propia web.
 
@@ -86,6 +78,7 @@ PadPulse is a static browser app for testing controllers directly from the web. 
 - Approximate controller family and model detection.
 - `vendorId` and `productId` extraction when the browser exposes them through `gamepad.id`.
 - Spanish and English interface.
+- Adaptive `Auto / Full / Console` view mode with environment detection.
 - Live stick drift and deadzone visualization.
 - Realtime axis history.
 - Buttons and triggers monitoring.
@@ -133,6 +126,7 @@ If PowerShell blocks `npm.ps1`, run `node server.js` directly.
 
 - True hardware latency cannot be measured accurately from the browser. PadPulse shows an estimate based on `timestamp`, `requestAnimationFrame` and visible input changes.
 - Exact model detection depends on what each browser and operating system expose.
+- `Auto` mode tries to detect desktop, mobile or console-like browsers to adapt the presentation, but the full experience remains available if the user switches to `Full`.
 - The app works best on modern Chromium based browsers.
 - The site itself does not upload controller data anywhere.
 

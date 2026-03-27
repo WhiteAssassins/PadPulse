@@ -370,6 +370,10 @@ input {
   gap: 12px;
 }
 
+.field-compact {
+  min-height: 100%;
+}
+
 .field span {
   color: var(--muted);
 }
@@ -462,6 +466,9 @@ input[type="range"] {
 }
 
 .tab-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-height: 50px;
   padding: 0 18px;
   border-radius: 999px;
@@ -943,10 +950,84 @@ canvas {
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+.console-note-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, 1.5fr) minmax(200px, 260px) minmax(240px, 320px);
+  gap: 18px;
+  align-items: start;
+}
+
+.console-note-copy {
+  display: grid;
+  gap: 8px;
+}
+
 .console-note p {
   margin: 0;
   color: var(--muted);
   line-height: 1.6;
+}
+
+.meta-item-compact {
+  display: grid;
+  gap: 6px;
+}
+
+.meta-inline {
+  margin-top: 8px;
+}
+
+body[data-view-mode="console"] .app-shell {
+  width: min(1680px, calc(100% - 20px));
+}
+
+body[data-view-mode="console"] .hero,
+body[data-view-mode="console"] .workspace {
+  padding: 32px;
+}
+
+body[data-view-mode="console"] .hero {
+  min-height: auto;
+  gap: 24px;
+}
+
+body[data-view-mode="console"] .tabs-shell {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+body[data-view-mode="console"] .tab-btn,
+body[data-view-mode="console"] .primary-btn,
+body[data-view-mode="console"] .ghost-btn,
+body[data-view-mode="console"] .lang-btn,
+body[data-view-mode="console"] select {
+  min-height: 56px;
+  font-size: 1rem;
+}
+
+body[data-view-mode="console"] .control-row,
+body[data-view-mode="console"] .meta-strip,
+body[data-view-mode="console"] .workspace-grid,
+body[data-view-mode="console"] .workspace-two,
+body[data-view-mode="console"] .workspace-three,
+body[data-view-mode="console"] .guide-summary,
+body[data-view-mode="console"] .metric-grid-wide,
+body[data-view-mode="console"] .console-note-grid {
+  grid-template-columns: 1fr;
+}
+
+body[data-view-mode="console"] .hero-text,
+body[data-view-mode="console"] .panel-text,
+body[data-view-mode="console"] .note p,
+body[data-view-mode="console"] .meta-item p,
+body[data-view-mode="console"] .console-note p {
+  max-width: 64ch;
+  font-size: 1.02rem;
+}
+
+body[data-view-mode="console"] .console-note {
+  border-color: rgba(69, 240, 209, 0.18);
+  background: linear-gradient(180deg, rgba(69, 240, 209, 0.08), rgba(255, 255, 255, 0.03));
 }
 
 .project-footer {
@@ -1015,7 +1096,8 @@ canvas {
   .meta-strip,
   .guide-summary,
   .metric-grid-wide,
-  .buttons-grid {
+  .buttons-grid,
+  .console-note-grid {
     grid-template-columns: 1fr;
   }
 

@@ -126,7 +126,7 @@
           <div class="note">
             <span class="label" data-i18n="noteLabel">Note</span>
             <p id="latencyNote" data-i18n="latencyNote">
-              Real hardware latency is not exposed to the browser. This demo shows an estimate based on
+              Real hardware latency is not exposed to the browser. PadPulse shows an estimate based on
               timestamp, requestAnimationFrame cadence and visible input changes.
             </p>
           </div>
@@ -381,8 +381,29 @@
 
       <section class="workspace workspace-console-note">
         <div class="console-note">
-          <span class="label" data-i18n="consoleNoteLabel">Console friendly</span>
-          <p data-i18n="consoleNoteText">This layout is optimized for keyboards, gamepads and TV-like browsers with large focus targets and no hover-only actions.</p>
+          <div class="console-note-grid">
+            <div class="console-note-copy">
+              <span class="label" data-i18n="consoleNoteLabel">Adaptive mode</span>
+              <p data-i18n="consoleNoteText">PadPulse detects whether you arrive from desktop, mobile or a console-like browser so it can adapt density and focus targets without hiding features.</p>
+            </div>
+
+            <label class="field field-compact">
+              <span data-i18n="viewModeLabel">View mode</span>
+              <select id="viewModeSelect">
+                <option value="auto" data-i18n="viewModeAuto">Auto</option>
+                <option value="full" data-i18n="viewModeFull">Full</option>
+                <option value="console" data-i18n="viewModeConsole">Console</option>
+              </select>
+            </label>
+
+            <div class="meta-item meta-item-compact">
+              <span class="label" data-i18n="detectedEnvironmentLabel">Detected access</span>
+              <strong id="detectedEnvironmentState">Desktop browser</strong>
+              <span class="label meta-inline" data-i18n="appliedModeLabel">Active layout</span>
+              <strong id="appliedViewModeState">Full</strong>
+              <p id="experienceModeSummary">Auto keeps the full workspace available while adapting spacing and focus priority when needed.</p>
+            </div>
+          </div>
         </div>
       </section>
     </main>

@@ -2,8 +2,10 @@ const MAX_HISTORY = 180;
 const BUTTON_COUNT = 18;
 const DEFAULT_LANGUAGE = "es";
 const LANGUAGE_STORAGE_KEY = "padpulse-language";
+const VIEW_MODE_STORAGE_KEY = "padpulse-view-mode";
 const COMPAT_STORAGE_KEY = "padpulse-compatibility-db";
 const SESSION_STORAGE_KEY = "padpulse-session-history";
+const VIEW_MODE_OPTIONS = ["auto", "full", "console"];
 const GUIDE_STEP_IDS = [
   "center",
   "leftSweep",
@@ -98,7 +100,7 @@ const TRANSLATIONS = {
     deadzoneLabel: "Zona muerta",
     noteLabel: "Nota",
     latencyNote:
-      "La latencia real del hardware no es accesible desde el navegador. Esta demo muestra una estimacion basada en timestamp, requestAnimationFrame y cambios de entrada visibles.",
+      "La latencia real del hardware no es accesible desde el navegador. PadPulse muestra una estimacion basada en timestamp, requestAnimationFrame y cambios de entrada visibles.",
     rawIdLabel: "ID bruto del gamepad",
     privacyLabel: "Privacidad",
     privacyText:
@@ -152,9 +154,29 @@ const TRANSLATIONS = {
     tabTriggers: "Gatillos",
     tabTools: "Utilidades",
     tabHistory: "Historial",
-    consoleNoteLabel: "Pensado para consola",
+    consoleNoteLabel: "Modo adaptativo",
     consoleNoteText:
-      "Este layout esta optimizado para teclado, mando y navegadores tipo TV con focos grandes y sin acciones que dependan solo del hover.",
+      "PadPulse detecta si entras desde escritorio, movil o navegador de consola para ajustar densidad, foco y tamano de controles, pero el workspace completo sigue disponible para cualquiera.",
+    viewModeLabel: "Modo de vista",
+    viewModeAuto: "Auto",
+    viewModeFull: "Full",
+    viewModeConsole: "Consola",
+    detectedEnvironmentLabel: "Acceso detectado",
+    appliedModeLabel: "Vista activa",
+    detectedAccessDesktop: "Navegador de escritorio",
+    detectedAccessMobile: "Navegador movil",
+    detectedAccessTv: "Navegador de consola / TV",
+    detectedAccessPlayStation: "Navegador de PlayStation",
+    detectedAccessXbox: "Navegador de Xbox",
+    detectedAccessNintendo: "Navegador de Nintendo Switch",
+    viewModeSummaryAutoFull:
+      "Auto ha elegido la vista Full para este acceso. Puedes cambiar a Consola manualmente si navegas desde lejos o con el mando.",
+    viewModeSummaryAutoConsole:
+      "Auto ha elegido la vista Consola para dar targets mas grandes y una composicion mas clara, sin ocultar ninguna herramienta.",
+    viewModeSummaryFull:
+      "La vista Full mantiene la densidad completa y deja todas las secciones igual de visibles.",
+    viewModeSummaryConsole:
+      "La vista Consola reordena la interfaz para TV y navegacion con mando, pero conserva todas las funciones.",
     footerLineOne:
       "PadPulse es un proyecto web estatico pensado para probar mandos sin instalar software nativo.",
     footerLineTwo:
@@ -262,7 +284,7 @@ const TRANSLATIONS = {
     deadzoneLabel: "Deadzone",
     noteLabel: "Note",
     latencyNote:
-      "Real hardware latency is not exposed to the browser. This demo shows an estimate based on timestamp, requestAnimationFrame cadence and visible input changes.",
+      "Real hardware latency is not exposed to the browser. PadPulse shows an estimate based on timestamp, requestAnimationFrame cadence and visible input changes.",
     rawIdLabel: "Raw gamepad id",
     privacyLabel: "Privacy",
     privacyText:
@@ -316,9 +338,29 @@ const TRANSLATIONS = {
     tabTriggers: "Triggers",
     tabTools: "Tools",
     tabHistory: "History",
-    consoleNoteLabel: "Console friendly",
+    consoleNoteLabel: "Adaptive mode",
     consoleNoteText:
-      "This layout is optimized for keyboard, gamepad and TV-like browsers with large focus targets and no hover-only actions.",
+      "PadPulse detects whether you arrive from desktop, mobile or a console-like browser so it can adapt density and focus targets without hiding any feature.",
+    viewModeLabel: "View mode",
+    viewModeAuto: "Auto",
+    viewModeFull: "Full",
+    viewModeConsole: "Console",
+    detectedEnvironmentLabel: "Detected access",
+    appliedModeLabel: "Active layout",
+    detectedAccessDesktop: "Desktop browser",
+    detectedAccessMobile: "Mobile browser",
+    detectedAccessTv: "Console / TV browser",
+    detectedAccessPlayStation: "PlayStation browser",
+    detectedAccessXbox: "Xbox browser",
+    detectedAccessNintendo: "Nintendo Switch browser",
+    viewModeSummaryAutoFull:
+      "Auto selected the Full layout for this access. You can switch to Console manually if you are browsing from a TV or with a gamepad.",
+    viewModeSummaryAutoConsole:
+      "Auto selected the Console layout to prioritize bigger targets and clearer composition without hiding any tool.",
+    viewModeSummaryFull:
+      "Full keeps the denser workspace and leaves every section equally exposed.",
+    viewModeSummaryConsole:
+      "Console reorganizes the interface for TV and gamepad navigation while keeping every feature available.",
     footerLineOne:
       "PadPulse is a static browser project built to test controller input without installing native software.",
     footerLineTwo:
@@ -465,6 +507,10 @@ const dom = {
   savedSessionsList: document.getElementById("savedSessionsList"),
   clearCompatBtn: document.getElementById("clearCompatBtn"),
   clearSessionsBtn: document.getElementById("clearSessionsBtn"),
+  viewModeSelect: document.getElementById("viewModeSelect"),
+  detectedEnvironmentState: document.getElementById("detectedEnvironmentState"),
+  appliedViewModeState: document.getElementById("appliedViewModeState"),
+  experienceModeSummary: document.getElementById("experienceModeSummary"),
   metricTemplate: document.getElementById("metricTemplate"),
   translatable: Array.from(document.querySelectorAll("[data-i18n]")),
   metaDescription: document.querySelector('meta[name="description"]'),
@@ -472,6 +518,9 @@ const dom = {
 
 const state = {
   language: resolveInitialLanguage(),
+  viewModePreference: resolveInitialViewMode(),
+  detectedEnvironment: detectAccessEnvironment(),
+  effectiveViewMode: "full",
   activeTab: "tester",
   deadzone: Number(dom.deadzoneRange.value),
   selectedIndex: null,
@@ -516,6 +565,11 @@ function resolveInitialLanguage() {
   return (navigator.language || DEFAULT_LANGUAGE).toLowerCase().startsWith("es") ? "es" : "en";
 }
 
+function resolveInitialViewMode() {
+  const saved = window.localStorage.getItem(VIEW_MODE_STORAGE_KEY);
+  return VIEW_MODE_OPTIONS.includes(saved) ? saved : "auto";
+}
+
 function loadStoredJson(key, fallback) {
   try {
     const raw = window.localStorage.getItem(key);
@@ -536,6 +590,91 @@ function t(key, replacements = {}) {
     value = value.replace(`{{${name}}}`, String(replacement));
   });
   return value;
+}
+
+function detectAccessEnvironment() {
+  const ua = (navigator.userAgent || "").toLowerCase();
+  const platform = (navigator.userAgentData?.platform || navigator.platform || "").toLowerCase();
+  const coarsePointer = window.matchMedia?.("(pointer: coarse)").matches ?? false;
+  const narrowViewport = window.matchMedia?.("(max-width: 820px)").matches ?? window.innerWidth <= 820;
+  const touchPoints = navigator.maxTouchPoints || 0;
+  const appleTabletLike = platform === "macintel" && touchPoints > 1;
+
+  if (/playstation/.test(ua)) {
+    return { kind: "console", labelKey: "detectedAccessPlayStation" };
+  }
+
+  if (/xbox/.test(ua)) {
+    return { kind: "console", labelKey: "detectedAccessXbox" };
+  }
+
+  if (/nintendobrowser|nintendo switch/.test(ua)) {
+    return { kind: "console", labelKey: "detectedAccessNintendo" };
+  }
+
+  if (/smart-tv|smarttv|hbbtv|googletv|appletv|crkey|aft|web0s|webos|tizen|viera/.test(ua)) {
+    return { kind: "console", labelKey: "detectedAccessTv" };
+  }
+
+  if (/iphone|ipad|ipod|android|mobile/.test(ua) || /android|ios/.test(platform) || appleTabletLike || (touchPoints > 1 && coarsePointer && narrowViewport)) {
+    return { kind: "mobile", labelKey: "detectedAccessMobile" };
+  }
+
+  if (coarsePointer && !narrowViewport && !/win|mac|linux/.test(platform) && !/windows|macintosh|x11|linux/.test(ua)) {
+    return { kind: "console", labelKey: "detectedAccessTv" };
+  }
+
+  return { kind: "desktop", labelKey: "detectedAccessDesktop" };
+}
+
+function resolveEffectiveViewMode() {
+  if (state.viewModePreference === "auto") {
+    return state.detectedEnvironment.kind === "console" ? "console" : "full";
+  }
+
+  return state.viewModePreference;
+}
+
+function getViewModeLabelKey(mode) {
+  if (mode === "console") {
+    return "viewModeConsole";
+  }
+
+  return "viewModeFull";
+}
+
+function getViewModeSummaryKey() {
+  if (state.viewModePreference === "auto") {
+    return state.effectiveViewMode === "console" ? "viewModeSummaryAutoConsole" : "viewModeSummaryAutoFull";
+  }
+
+  return state.effectiveViewMode === "console" ? "viewModeSummaryConsole" : "viewModeSummaryFull";
+}
+
+function applyViewMode({ refreshEnvironment = true } = {}) {
+  if (refreshEnvironment) {
+    state.detectedEnvironment = detectAccessEnvironment();
+  }
+
+  state.effectiveViewMode = resolveEffectiveViewMode();
+  document.body.dataset.viewMode = state.effectiveViewMode;
+  document.body.dataset.detectedEnvironment = state.detectedEnvironment.kind;
+
+  if (dom.viewModeSelect) {
+    dom.viewModeSelect.value = state.viewModePreference;
+  }
+
+  if (dom.detectedEnvironmentState) {
+    dom.detectedEnvironmentState.textContent = t(state.detectedEnvironment.labelKey);
+  }
+
+  if (dom.appliedViewModeState) {
+    dom.appliedViewModeState.textContent = t(getViewModeLabelKey(state.effectiveViewMode));
+  }
+
+  if (dom.experienceModeSummary) {
+    dom.experienceModeSummary.textContent = t(getViewModeSummaryKey());
+  }
 }
 
 function createEmptyStats() {
@@ -848,6 +987,7 @@ function recordCompatibility(gamepad, controllerInfo) {
 
 function renderCompatibilityTable() {
   dom.compatTableBody.innerHTML = "";
+  const visibleCount = state.effectiveViewMode === "console" ? 5 : 8;
 
   if (!state.compatibilityRecords.length) {
     const row = document.createElement("tr");
@@ -859,7 +999,7 @@ function renderCompatibilityTable() {
     return;
   }
 
-  state.compatibilityRecords.slice(0, 8).forEach((record) => {
+  state.compatibilityRecords.slice(0, visibleCount).forEach((record) => {
     const row = document.createElement("tr");
     row.innerHTML = `
       <td><strong>${escapeHtml(record.model)}</strong><span class="table-subtitle">${escapeHtml(record.hardwareIds)}<br>${escapeHtml(record.rawId)}</span></td>
@@ -871,9 +1011,9 @@ function renderCompatibilityTable() {
     dom.compatTableBody.append(row);
   });
 
-  if (state.compatibilityRecords.length > 8) {
+  if (state.compatibilityRecords.length > visibleCount) {
     const row = document.createElement("tr");
-    row.innerHTML = `<td colspan="5"><div class="empty-state">${t("compatibilityTrimmed", { count: 8 })}</div></td>`;
+    row.innerHTML = `<td colspan="5"><div class="empty-state">${t("compatibilityTrimmed", { count: visibleCount })}</div></td>`;
     dom.compatTableBody.append(row);
   }
 }
@@ -1539,6 +1679,7 @@ function applyLanguageToUi() {
   dom.langEsBtn.classList.toggle("active", state.language === "es");
   dom.langEnBtn.classList.toggle("active", state.language === "en");
   dom.utilityStatus.textContent = t(state.utilityStatusKey);
+  applyViewMode({ refreshEnvironment: false });
   updateInstallButton();
   renderCompatibilityTable();
   renderSavedSessions();
@@ -1758,6 +1899,13 @@ function bindEvents() {
     changeLanguage("en");
   });
 
+  dom.viewModeSelect.addEventListener("change", (event) => {
+    state.viewModePreference = VIEW_MODE_OPTIONS.includes(event.target.value) ? event.target.value : "auto";
+    window.localStorage.setItem(VIEW_MODE_STORAGE_KEY, state.viewModePreference);
+    applyViewMode();
+    renderCompatibilityTable();
+  });
+
   dom.installBtn.addEventListener("click", () => {
     promptInstall();
   });
@@ -1802,6 +1950,8 @@ function bindEvents() {
   });
 
   window.addEventListener("resize", () => {
+    applyViewMode();
+    renderCompatibilityTable();
     drawHistory();
     drawTriggerCharts();
   });
